@@ -1,10 +1,10 @@
 {
-  "uuid": "52821b97-f2e8-4ba0-8d69-b395866da285",
+  "uuid": "52821b97-f2e8-4ba0-8f69-b395866da285",
   "shortName": "Retro Clock",
   "longName": "Retro Clock",
-  "companyName": "lingen.me",
-  "versionCode": 3,
-  "versionLabel": "2.0.1",
+  "companyName": "bensler.com",
+  "versionCode": 1,
+  "versionLabel": "0.1",
   "watchapp": {
     "watchface": true
   },
