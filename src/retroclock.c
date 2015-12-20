@@ -23,32 +23,25 @@ AppSync app;
 uint8_t buffer[256];
 
 // utility function to strip a leading space or zero from a string.
-char* strip(char* input)
-{
-	if (strlen(input) > 1 && (input[0] == ' ' || input[0] == '0'))
-	{
+char* strip(char* input) {
+	if (strlen(input) > 1 && (input[0] == ' ' || input[0] == '0')) {
 		return input + 1;
 	}
-
 	return input;
 }
 
 // callback function for rendering the background layer
-void background_update_callback(Layer *me, GContext* ctx)
-{
+void background_update_callback(Layer *me, GContext* ctx) {
 	graphics_context_set_fill_color(ctx, COLOR_FOREGROUND);
 	graphics_fill_rect(ctx, GRect(2,8,68,68), 4, GCornersAll);
 	graphics_fill_rect(ctx, GRect(74,8,68,68), 4, GCornersAll);
 	graphics_fill_rect(ctx, GRect(2,92,140,32), 4, GCornersAll);
 
-	if (date_format == yyyymmdd)
-	{
+	if (date_format == yyyymmdd) {
 		graphics_fill_rect(ctx, GRect(2,128,68,32), 4, GCornersAll);
 		graphics_fill_rect(ctx, GRect(74,128,32,32), 4, GCornersAll);
 		graphics_fill_rect(ctx, GRect(110,128,32,32), 4, GCornersAll);
-	}
-	else
-	{
+	}	else {
 		graphics_fill_rect(ctx, GRect(2,128,32,32), 4, GCornersAll);
 		graphics_fill_rect(ctx, GRect(38,128,32,32), 4, GCornersAll);
 		graphics_fill_rect(ctx, GRect(74,128,68,32), 4, GCornersAll);
@@ -61,8 +54,7 @@ void background_update_callback(Layer *me, GContext* ctx)
 }
 
 // set update the time and date text layers
-void display_time(struct tm *tick_time)
-{
+void display_time(struct tm *tick_time) {
 	time_t now;
 	if (tick_time == NULL) {
 		now = time(NULL);
@@ -77,12 +69,9 @@ void display_time(struct tm *tick_time)
 	static char year[]   = "    ";
 	static char ampm[]   = "  ";
 
-	if (clock_is_24h_style())
-	{
+	if (clock_is_24h_style())	{
 		strftime(hour, sizeof(hour), "%H", tick_time);
-	}
-	else
-	{
+	}	else {
 		strftime(hour, sizeof(hour), "%l", tick_time);
 	}
 
@@ -92,8 +81,7 @@ void display_time(struct tm *tick_time)
 	strftime(month, sizeof(month), "%m", tick_time);
 	strftime(year, sizeof(year), "%Y", tick_time);
 
-	if (!clock_is_24h_style())
-	{
+	if (!clock_is_24h_style()) {
 		strftime(ampm, sizeof(ampm), "%p", tick_time);
 	}
 
@@ -107,15 +95,14 @@ void display_time(struct tm *tick_time)
 }
 
 // callback function for minute tick events that update the time and date display
-void handle_tick(struct tm *tick_time, TimeUnits units_changed)
-{
+void handle_tick(struct tm *tick_time, TimeUnits units_changed) {
 	display_time(tick_time);
 }
 
 void update_date_format() {
-        int date = 0;
+  int date = 0;
 	int month = 0;
-        int year = 0;
+  int year = 0;
 
 	switch (date_format) {
 		case ddmmyyyy:
@@ -138,16 +125,14 @@ void update_date_format() {
 	}
 
 	GRect rect = layer_get_frame(text_layer_get_layer(date_text));
-        rect.origin.x = date;
-        layer_set_frame(text_layer_get_layer(date_text), rect);
-	
+  rect.origin.x = date;
+  layer_set_frame(text_layer_get_layer(date_text), rect);
 	rect = layer_get_frame(text_layer_get_layer(month_text));
-        rect.origin.x = month;
-        layer_set_frame(text_layer_get_layer(month_text), rect);
-
+  rect.origin.x = month;
+  layer_set_frame(text_layer_get_layer(month_text), rect);
 	rect = layer_get_frame(text_layer_get_layer(year_text));
-        rect.origin.x = year;
-        layer_set_frame(text_layer_get_layer(year_text), rect);
+  rect.origin.x = year;
+  layer_set_frame(text_layer_get_layer(year_text), rect);
 }
 
 static void tuple_changed_callback(const uint32_t key, const Tuple* tuple_new, const Tuple* tuple_old, void* context) {
@@ -160,7 +145,7 @@ static void tuple_changed_callback(const uint32_t key, const Tuple* tuple_new, c
 				date_format = value;
 				update_date_format();
 				display_time(NULL);
-				}
+			}
 			break;
 	}
 }
@@ -170,8 +155,7 @@ void app_error_callback(DictionaryResult dict_error, AppMessageResult app_messag
 }
 
 // utility function for initializing a text layer
-void init_text(TextLayer* textlayer, ResourceId font)
-{
+void init_text(TextLayer* textlayer, ResourceId font) {
 	text_layer_set_text_alignment(textlayer, GTextAlignmentCenter);
 	text_layer_set_text_color(textlayer, COLOR_BACKGROUND);
 	text_layer_set_background_color(textlayer, GColorClear);
@@ -179,8 +163,7 @@ void init_text(TextLayer* textlayer, ResourceId font)
 }
 
 // callback function for the app initialization
-void handle_init()
-{
+void handle_init() {
 	date_format = 0;
 	if (persist_exists(DATEFORMAT_KEY)) {
 		date_format = persist_read_int(DATEFORMAT_KEY);
@@ -196,46 +179,32 @@ void handle_init()
 
 	hour_text = text_layer_create(GRect(2, 8 + 4, 68, 68 - 4));
 	init_text(hour_text, RESOURCE_ID_FONT_ROBOTO_BOLD_SUBSET_46);
-
 	minute_text = text_layer_create(GRect(74, 8 + 4, 68, 68 - 4));
 	init_text(minute_text, RESOURCE_ID_FONT_ROBOTO_BOLD_SUBSET_46);
-
 	day_text = text_layer_create(GRect(2, 92 + 2, 140, 32 - 2));
 	init_text(day_text, RESOURCE_ID_FONT_ROBOTO_BOLD_22);
-
 	ampm_text = text_layer_create(GRect(4, 48, 16, 12));
 	init_text(ampm_text, RESOURCE_ID_FONT_ROBOTO_CONDENSED_SUBSET_10);
 
-	if (date_format == ddmmyyyy)
-	{
+	if (date_format == ddmmyyyy) {
 		date_text = text_layer_create(GRect(2, 128 + 2, 32, 32 - 2));
 		init_text(date_text, RESOURCE_ID_FONT_ROBOTO_BOLD_22);
-
 		month_text = text_layer_create(GRect(38, 128 + 2, 32, 32 - 2));
 		init_text(month_text, RESOURCE_ID_FONT_ROBOTO_BOLD_22);
-
 		year_text = text_layer_create(GRect(74, 128 + 2, 68, 32 - 2));
 		init_text(year_text, RESOURCE_ID_FONT_ROBOTO_BOLD_22);
-	}
-	else if (date_format == mmddyyyy)
-	{
+	}	else if (date_format == mmddyyyy)	{
 		month_text = text_layer_create(GRect(2, 128 + 2, 32, 32 - 2));
 		init_text(month_text, RESOURCE_ID_FONT_ROBOTO_BOLD_22);
-
 		date_text = text_layer_create(GRect(38, 128 + 2, 32, 32 - 2));
 		init_text(date_text, RESOURCE_ID_FONT_ROBOTO_BOLD_22);
-
 		year_text = text_layer_create(GRect(74, 128 + 2, 68, 32 - 2));
 		init_text(year_text, RESOURCE_ID_FONT_ROBOTO_BOLD_22);
-	}
-	else if (date_format == yyyymmdd)
-	{
+	}	else if (date_format == yyyymmdd)	{
 		year_text = text_layer_create(GRect(2, 128 + 2, 68, 32 - 2));
 		init_text(year_text, RESOURCE_ID_FONT_ROBOTO_BOLD_22);
-
 		month_text = text_layer_create(GRect(74, 128 + 2, 32, 32 - 2));
 		init_text(month_text, RESOURCE_ID_FONT_ROBOTO_BOLD_22);
-
 		date_text = text_layer_create(GRect(110, 128 + 2, 32, 32 - 2));
 		init_text(date_text, RESOURCE_ID_FONT_ROBOTO_BOLD_22);
 	}
@@ -248,7 +217,6 @@ void handle_init()
 	layer_add_child(window_get_root_layer(window), text_layer_get_layer(year_text));
 	layer_add_child(window_get_root_layer(window), text_layer_get_layer(ampm_text));
 
-
 	Tuplet tuples[] = {
 		TupletInteger(setting_dateformat, date_format)
 	};
@@ -260,12 +228,9 @@ void handle_init()
 	tick_timer_service_subscribe(MINUTE_UNIT, handle_tick);
 }
 
-void handle_deinit()
-{
+void handle_deinit() {
 	tick_timer_service_unsubscribe();
-
 	persist_write_int(DATEFORMAT_KEY, date_format);
-
 	text_layer_destroy(hour_text);
 	text_layer_destroy(minute_text);
 	text_layer_destroy(day_text);
@@ -283,8 +248,7 @@ void handle_deinit()
 }
 
 // main entry point of this Pebble watchface
-int main(void)
-{
+int main(void) {
 	handle_init();
 	app_event_loop();
 	handle_deinit();
