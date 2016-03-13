@@ -12,7 +12,6 @@ TextLayer* day_text;
 TextLayer* date_text;
 TextLayer* month_text;
 TextLayer* year_text;
-TextLayer* ampm_text;
 
 AppSync app;
 
@@ -46,7 +45,6 @@ void display_time(struct tm *tick_time) {
   static char date[]   = "  ";
   static char month[]  = "  ";
   static char year[]   = "    ";
-  static char ampm[]   = "  ";
 
   strftime(hour, sizeof(hour), "%H", tick_time);
   strftime(minute, sizeof(minute), "%M", tick_time);
@@ -61,7 +59,6 @@ void display_time(struct tm *tick_time) {
   text_layer_set_text(date_text, date);
   text_layer_set_text(month_text, strip(month));
   text_layer_set_text(year_text, year);
-  text_layer_set_text(ampm_text, ampm);
 }
 
 // callback function for minute tick events that update the time and date display
@@ -93,8 +90,6 @@ void handle_init() {
   init_text(minute_text, RESOURCE_ID_FONT_ROBOTO_BOLD_SUBSET_46);
   day_text = text_layer_create(GRect(2, 94, 140, 30));
   init_text(day_text, RESOURCE_ID_FONT_ROBOTO_BOLD_22);
-  ampm_text = text_layer_create(GRect(4, 48, 16, 12));
-  init_text(ampm_text, RESOURCE_ID_FONT_ROBOTO_CONDENSED_SUBSET_10);
 
   date_text = text_layer_create(GRect(2, 130, 32, 30));
   init_text(date_text, RESOURCE_ID_FONT_ROBOTO_BOLD_22);
@@ -109,7 +104,6 @@ void handle_init() {
   layer_add_child(window_get_root_layer(window), text_layer_get_layer(date_text));
   layer_add_child(window_get_root_layer(window), text_layer_get_layer(month_text));
   layer_add_child(window_get_root_layer(window), text_layer_get_layer(year_text));
-  layer_add_child(window_get_root_layer(window), text_layer_get_layer(ampm_text));
 
 	time_t now = time(NULL);
   display_time(localtime(&now));
@@ -121,7 +115,6 @@ void handle_deinit() {
   text_layer_destroy(hour_text);
   text_layer_destroy(minute_text);
   text_layer_destroy(day_text);
-  text_layer_destroy(ampm_text);
   text_layer_destroy(date_text);
   text_layer_destroy(month_text);
   text_layer_destroy(year_text);
