@@ -67,8 +67,8 @@ void handle_tick(struct tm *tick_time, TimeUnits units_changed) {
 }
 
 // utility function for initializing a text layer
-void init_text(TextLayer* textlayer, ResourceId font) {
-  text_layer_set_text_alignment(textlayer, GTextAlignmentCenter);
+void init_text(TextLayer* textlayer, ResourceId font, GTextAlignment alignment) {
+  text_layer_set_text_alignment(textlayer, alignment);
   text_layer_set_text_color(textlayer, COLOR_BACKGROUND);
   text_layer_set_background_color(textlayer, GColorClear);
   text_layer_set_font(textlayer, fonts_load_custom_font(resource_get_handle(font)));
@@ -84,19 +84,19 @@ void handle_init() {
   layer_set_update_proc(background, &background_update_callback);
   layer_add_child(window_get_root_layer(window), background);
 
-  hour_text = text_layer_create(GRect(2, 12, 68, 64));
-  init_text(hour_text, RESOURCE_ID_FONT_ROBOTO_BOLD_SUBSET_46);
-  minute_text = text_layer_create(GRect(74, 12, 68, 64));
-  init_text(minute_text, RESOURCE_ID_FONT_ROBOTO_BOLD_SUBSET_46);
+  hour_text = text_layer_create(GRect(8, 12, 54, 64));
+  init_text(hour_text, RESOURCE_ID_FONT_ROBOTO_BOLD_SUBSET_46, GTextAlignmentRight);
+  minute_text = text_layer_create(GRect(80, 12, 54, 64));
+  init_text(minute_text, RESOURCE_ID_FONT_ROBOTO_BOLD_SUBSET_46, GTextAlignmentRight);
   day_text = text_layer_create(GRect(2, 94, 140, 30));
-  init_text(day_text, RESOURCE_ID_FONT_ROBOTO_BOLD_22);
+  init_text(day_text, RESOURCE_ID_FONT_ROBOTO_BOLD_22, GTextAlignmentCenter);
 
-  date_text = text_layer_create(GRect(2, 130, 32, 30));
-  init_text(date_text, RESOURCE_ID_FONT_ROBOTO_BOLD_22);
-  month_text = text_layer_create(GRect(38, 130, 32, 30));
-  init_text(month_text, RESOURCE_ID_FONT_ROBOTO_BOLD_22);
+  date_text = text_layer_create(GRect(5, 130, 26, 30));
+  init_text(date_text, RESOURCE_ID_FONT_ROBOTO_BOLD_22, GTextAlignmentRight);
+  month_text = text_layer_create(GRect(41, 130, 26, 30));
+  init_text(month_text, RESOURCE_ID_FONT_ROBOTO_BOLD_22, GTextAlignmentRight);
   year_text = text_layer_create(GRect(74, 130, 68, 30));
-  init_text(year_text, RESOURCE_ID_FONT_ROBOTO_BOLD_22);
+  init_text(year_text, RESOURCE_ID_FONT_ROBOTO_BOLD_22, GTextAlignmentCenter);
 
   layer_add_child(window_get_root_layer(window), text_layer_get_layer(hour_text));
   layer_add_child(window_get_root_layer(window), text_layer_get_layer(minute_text));
