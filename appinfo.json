@@ -39,5 +39,11 @@
         "file": "fonts/Roboto-Condensed.ttf"
       }
     ]
-  }
+  },
+  "targetPlatforms": [
+    "aplite",
+    "basalt",
+    "chalk"
+  ],
+  "sdkVersion": "3"
 }
