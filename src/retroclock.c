@@ -20,27 +20,10 @@ char* strip(char* input) {
   return input + (((strlen(input) > 1) && (input[0] == '0')) ? 1 : 0);
 }
 
-// callback function for rendering the background layer
-void background_update_callback(Layer *me, GContext* ctx) {
-  graphics_context_set_fill_color(ctx, COLOR_FOREGROUND);
-  graphics_fill_rect(ctx, GRect(2,8,68,68), 4, GCornersAll);
-  graphics_fill_rect(ctx, GRect(74,8,68,68), 4, GCornersAll);
-  graphics_fill_rect(ctx, GRect(2,92,140,32), 4, GCornersAll);
-
-  graphics_fill_rect(ctx, GRect(2,128,32,32), 4, GCornersAll);
-  graphics_fill_rect(ctx, GRect(38,128,32,32), 4, GCornersAll);
-  graphics_fill_rect(ctx, GRect(74,128,68,32), 4, GCornersAll);
-
-  graphics_context_set_stroke_color(ctx, COLOR_BACKGROUND);
-  graphics_draw_line(ctx, GPoint(2,41), GPoint(142,41));
-  graphics_draw_line(ctx, GPoint(2,108), GPoint(142,108));
-  graphics_draw_line(ctx, GPoint(2,144), GPoint(142,144));
-}
-
 // set update the time and date text layers
 void display_time(struct tm *tick_time) {
-  static char hour[]   = "12";
-  static char minute[] = "21";
+  static char hour[]   = "  ";
+  static char minute[] = "  ";
   static char day[]    = "            ";
   static char date[]   = "  ";
   static char month[]  = "  ";
@@ -74,8 +57,30 @@ void init_text(TextLayer* textlayer, ResourceId font, GTextAlignment alignment) 
   text_layer_set_font(textlayer, fonts_load_custom_font(resource_get_handle(font)));
 }
 
-// callback function for the app initialization
-void handle_init() {
+// callback function for rendering the background layer
+void background_update_callback(Layer *me, GContext* ctx) {
+  graphics_context_set_fill_color(ctx, COLOR_FOREGROUND);
+  graphics_fill_rect(ctx, GRect(2,  12,  64, 60), 4, GCornersAll); // hours
+  graphics_fill_rect(ctx, GRect(70,  34,  4, 4), 0, GCornerNone);  // colon
+  graphics_fill_rect(ctx, GRect(70,  46,  4, 4), 0, GCornerNone);  //   "
+  graphics_fill_rect(ctx, GRect(78, 12,  64, 60), 4, GCornersAll); // mins
+
+  graphics_fill_rect(ctx, GRect(2,  90, 140, 32), 4, GCornersAll); // weekday
+
+  graphics_fill_rect(ctx, GRect(2,  128, 32, 32), 4, GCornersAll); // day
+  graphics_fill_rect(ctx, GRect(35, 156,  4,  4), 0, GCornerNone); // .
+  graphics_fill_rect(ctx, GRect(40, 128, 32, 32), 4, GCornersAll); // month
+  graphics_fill_rect(ctx, GRect(73, 156,  4,  4), 0, GCornerNone); // .
+  graphics_fill_rect(ctx, GRect(78, 128, 64, 32), 4, GCornersAll); // year
+
+  graphics_context_set_stroke_color(ctx, COLOR_BACKGROUND);
+  graphics_draw_line(ctx, GPoint( 2,  41), GPoint(142,  41)); // time
+  graphics_draw_line(ctx, GPoint( 2, 106), GPoint(142, 106)); // weekday
+  graphics_draw_line(ctx, GPoint( 2, 144), GPoint(142, 144)); // date
+}
+
+// app initialization
+void init() {
   window = window_create();
   window_stack_push(window, true /* Animated */);
   window_set_background_color(window, COLOR_BACKGROUND);
@@ -84,18 +89,19 @@ void handle_init() {
   layer_set_update_proc(background, &background_update_callback);
   layer_add_child(window_get_root_layer(window), background);
 
-  hour_text = text_layer_create(GRect(8, 12, 54, 64));
+  hour_text = text_layer_create(GRect(6, 12, 54, 64));
   init_text(hour_text, RESOURCE_ID_FONT_ROBOTO_BOLD_SUBSET_46, GTextAlignmentRight);
-  minute_text = text_layer_create(GRect(80, 12, 54, 64));
+  minute_text = text_layer_create(GRect(82, 12, 54, 64));
   init_text(minute_text, RESOURCE_ID_FONT_ROBOTO_BOLD_SUBSET_46, GTextAlignmentRight);
-  day_text = text_layer_create(GRect(2, 94, 140, 30));
+
+  day_text = text_layer_create(GRect(2, 92, 140, 30));
   init_text(day_text, RESOURCE_ID_FONT_ROBOTO_BOLD_22, GTextAlignmentCenter);
 
   date_text = text_layer_create(GRect(5, 130, 26, 30));
   init_text(date_text, RESOURCE_ID_FONT_ROBOTO_BOLD_22, GTextAlignmentRight);
-  month_text = text_layer_create(GRect(41, 130, 26, 30));
+  month_text = text_layer_create(GRect(43, 130, 26, 30));
   init_text(month_text, RESOURCE_ID_FONT_ROBOTO_BOLD_22, GTextAlignmentRight);
-  year_text = text_layer_create(GRect(74, 130, 68, 30));
+  year_text = text_layer_create(GRect(82, 130, 60, 30));
   init_text(year_text, RESOURCE_ID_FONT_ROBOTO_BOLD_22, GTextAlignmentCenter);
 
   layer_add_child(window_get_root_layer(window), text_layer_get_layer(hour_text));
@@ -110,7 +116,7 @@ void handle_init() {
   tick_timer_service_subscribe(MINUTE_UNIT, handle_tick);
 }
 
-void handle_deinit() {
+void deinit() {
   tick_timer_service_unsubscribe();
   text_layer_destroy(hour_text);
   text_layer_destroy(minute_text);
@@ -125,7 +131,7 @@ void handle_deinit() {
 
 // main entry point of this Pebble watchface
 int main(void) {
-  handle_init();
+  init();
   app_event_loop();
-  handle_deinit();
+  deinit();
 }
