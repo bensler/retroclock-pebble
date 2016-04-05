@@ -61,8 +61,8 @@ void init_text(TextLayer* textlayer, ResourceId font, GTextAlignment alignment) 
 void background_update_callback(Layer *me, GContext* ctx) {
   graphics_context_set_fill_color(ctx, COLOR_FOREGROUND);
   graphics_fill_rect(ctx, GRect(2,  12,  64, 60), 4, GCornersAll); // hours
-  graphics_fill_rect(ctx, GRect(70,  34,  4,  4), 0, GCornerNone);  // colon
-  graphics_fill_rect(ctx, GRect(70,  46,  4,  4), 0, GCornerNone);  //   "
+  graphics_fill_rect(ctx, GRect(70,  34,  4,  4), 0, GCornerNone); // colon
+  graphics_fill_rect(ctx, GRect(70,  46,  4,  4), 0, GCornerNone); //   "
   graphics_fill_rect(ctx, GRect(78, 12,  64, 60), 4, GCornersAll); // mins
 
   graphics_fill_rect(ctx, GRect(2,  90, 140, 32), 4, GCornersAll); // weekday
